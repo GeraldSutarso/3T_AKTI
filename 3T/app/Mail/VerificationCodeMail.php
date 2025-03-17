@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -12,25 +11,16 @@ class VerificationCodeMail extends Mailable
 
     public $code;
 
-    /**
-     * Create a new message instance.
-     *
-     * @param  mixed  $code
-     * @return void
-     */
     public function __construct($code)
     {
         $this->code = $code;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
         return $this->subject('Your Verification Code')
-                    ->view('emails.verification_code');
+                    ->view('emails.verification_code')
+                    ->with(['code' => $this->code]);
     }
 }
+

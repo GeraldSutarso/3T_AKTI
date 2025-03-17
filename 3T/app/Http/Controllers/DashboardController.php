@@ -8,65 +8,74 @@ use App\Models\Generation;
 use App\Models\Kpi;
 use App\Models\Physical;
 use App\Models\BodyData;
+use App\Models\FinalKpi;
+use App\Models\FinalPhysical;
+use App\Models\FinalBodyData;
 use App\Models\MinimumValue;
 
 class DashboardController extends Controller
 {
+    /**
+     * Show the main dashboard page (Vue will handle UI).
+     */
+    public function index()
+    {
+        return view('dashboard'); // resources/views/dashboard.blade.php
+    }
+
+    /**
+     * Provide Dashboard Data as JSON for Vue.
+     */
     public function dashboardData()
     {
-        // Fetch the current period and generation data (adjust the queries as needed)
-        $currentPeriod = Period::where('is_current', true)->first();
-        $currentGeneration = Generation::latest()->first(); // Adjust as needed
+        // Get the latest period and generation
+        $currentPeriod = Period::latest()->first();
+        $currentGeneration = Generation::latest()->first();
 
-        // Get minimum threshold values for comparison
+        // Get minimum threshold values (Ensure it's not null)
         $minimumValues = MinimumValue::first();
 
-        // Example: count KPI documents below a threshold
-        $kpiUnderMinCount = Kpi::where('kedisiplinan_point', '<', $minimumValues->kedisiplinan_min)->count();
+        // Provide default values if MinimumValue is null
+        $kedisiplinanMin = optional($minimumValues)->kedisiplinan_min ?? 0;
+        $bleepKkm = optional($minimumValues)->bleep_kkm ?? 0;
+        $heightKkm = optional($minimumValues)->height_kkm ?? 0;
 
-        // Prepare aggregated stats (expand as needed)
+        // Get KPI, Physical, and Body Data under the minimum threshold
         $stats = [
-            'KPI Under Minimum' => $kpiUnderMinCount,
-            'Physical Under Minimum' => Physical::where('bleep', '<', $minimumValues->bleep_kkm)->count(),
-            // ... add more stats if needed
+            'KPI Under Minimum'      => Kpi::where('kedisiplinan_point', '<', $kedisiplinanMin)->count(),
+            'Physical Under Minimum' => Physical::where('bleep', '<', $bleepKkm)->count(),
+            'BodyData Under Minimum' => BodyData::where('height', '<', $heightKkm)->count(),
         ];
 
-        // Prepare dummy chart data for demonstration (structure as needed)
+        // Prepare chart data (dummy for now)
         $chartData = [
-            'kpi'       => ['labels' => ['Below', 'Above'], 'values' => [5, 45]],
-            'physical'  => ['labels' => ['Below', 'Above'], 'values' => [3, 47]],
-            'body_data' => ['labels' => ['Below', 'Above'], 'values' => [2, 48]],
+            'kpi'       => ['labels' => ['Below Min', 'Above Min'], 'values' => [5, 45]],
+            'physical'  => ['labels' => ['Below Min', 'Above Min'], 'values' => [3, 47]],
+            'body_data' => ['labels' => ['Below Min', 'Above Min'], 'values' => [2, 48]],
         ];
 
-        // Get mini lists (e.g., latest 5 records) of current documents
-        $currentKpi = Kpi::latest()->limit(5)->get();
-        $currentPhysical = Physical::latest()->limit(5)->get();
-        $currentBodyData = BodyData::latest()->limit(5)->get();
+        // Fetch Final 3T Documents (from final tables)
+        $finalKpis = FinalKpi::latest()->limit(10)->get();
+        $finalPhysicals = FinalPhysical::latest()->limit(10)->get();
+        $finalBodyData = FinalBodyData::latest()->limit(10)->get();
+
+        // Fetch the latest KPI, Physical, and Body Data instead of filtering by `is_current`
+        $currentKpi = Kpi::latest()->first();
+        $currentPhysical = Physical::latest()->first();
+        $currentBodyData = BodyData::latest()->first();
 
         return response()->json([
             'currentGeneration' => $currentGeneration,
             'currentPeriod'     => $currentPeriod,
             'stats'             => $stats,
             'chartData'         => $chartData,
+            'finalKpis'         => $finalKpis,
+            'finalPhysicals'    => $finalPhysicals,
+            'finalBodyData'     => $finalBodyData,
             'currentKpi'        => $currentKpi,
             'currentPhysical'   => $currentPhysical,
             'currentBodyData'   => $currentBodyData,
         ]);
     }
-    // Example inside your Dashboard.vue component
-async fetchDashboardData() {
-    try {
-      const response = await axios.get('/dashboard-data');
-      this.currentGeneration = response.data.currentGeneration;
-      this.currentPeriod = response.data.currentPeriod;
-      this.stats = response.data.stats;
-      this.chartData = response.data.chartData;
-      this.currentKpi = response.data.currentKpi;
-      this.currentPhysical = response.data.currentPhysical;
-      this.currentBodyData = response.data.currentBodyData;
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    }
-  }
-  
+
 }

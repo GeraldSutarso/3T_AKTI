@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDevice;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMail;
+use Illuminate\Support\Facades\Mail;
+
 use Carbon\Carbon;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     /**
      * Display the login form.
@@ -37,6 +38,11 @@ class LoginController extends Controller
         // Retrieve the user by student_id.
         $user = User::where('student_id', $request->student_id)->first();
 
+        // ✅ Restrict login only to users from group_id 102
+        if ($user->group_id != 102) {
+            return redirect()->back()->withErrors(['student_id' => 'You are not authorized to access this application.']);
+        }
+
         // Check if this device was verified in the past 6 months.
         $device = UserDevice::where('user_id', $user->id)
                     ->where('device_identifier', $request->device_identifier)
@@ -60,7 +66,7 @@ class LoginController extends Controller
         ]);
 
         // Define the predefined email address (or load from config).
-        $predefinedEmail = 'predefined@example.com';
+        $predefinedEmail = 'testg2984@gmail.com';
 
         // Send the verification code via email.
         Mail::to($predefinedEmail)->send(new VerificationCodeMail($code));
@@ -68,6 +74,7 @@ class LoginController extends Controller
         // Redirect to the verification form with a message.
         return redirect()->route('verify.form')->with('message', 'Verification code sent.');
     }
+
 
     /**
      * Display the verification form where the user can enter the code.
@@ -91,6 +98,12 @@ class LoginController extends Controller
         if ($request->code == session('login_verification_code')) {
             $user = User::find(session('login_user_id'));
 
+            // ✅ Double-check user group before allowing login
+            if ($user->group_id != 102) {
+                session()->forget(['login_verification_code', 'login_user_id', 'device_identifier']);
+                return redirect()->route('login')->withErrors(['student_id' => 'Unauthorized access.']);
+            }
+
             // Log the user in with persistent "remember me" enabled.
             Auth::login($user, true);
 
@@ -109,4 +122,12 @@ class LoginController extends Controller
             return redirect()->back()->withErrors(['code' => 'Invalid verification code.']);
         }
     }
+    public function logout()
+    {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('login.form');
+    }
+
 }
