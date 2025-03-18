@@ -7,7 +7,15 @@ const app = createApp({});
 import ExampleComponent from './components/ExampleComponent.vue';
 import Dashboard from './components/Dashboard.vue';
 import ThreeTNavigation from './components/ThreeTNavigation.vue';
+import ChartComponent from './components/ChartComponent.vue';
+import NotificationWidget from './components/NotificationWidget.vue';
+import ChartsPage from './components/ChartsPage.vue';
+
 app.component('example-component', ExampleComponent);
 app.component('dashboard', Dashboard);
 app.component('three-t-navigation', ThreeTNavigation);
+app.component('chart-component', ChartComponent);
+app.component('notification-widget', NotificationWidget);
+app.component('charts-page', ChartsPage);
+
 app.mount('#app');

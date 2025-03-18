@@ -9,7 +9,7 @@ class Period extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['period', 'type', 'is_current'];
+    protected $fillable = ['month', 'semester', 'is_current'];
 
     public function kpis()
     {

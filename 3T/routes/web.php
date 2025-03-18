@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChartController;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
 
@@ -20,3 +21,5 @@ Route::middleware('auth')->get('/dashboard-data', [DashboardController::class, '
 
 // Default Homepage
 Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('home');
+Route::middleware('auth')->get('/api/chart-data', [DashboardController::class, 'getChartData']);
+
