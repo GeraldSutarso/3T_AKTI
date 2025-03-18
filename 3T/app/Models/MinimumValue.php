@@ -10,7 +10,6 @@ class MinimumValue extends Model
     use HasFactory;
 
     protected $fillable = [
-        'period_id',
         'bleep_very_good',
         'bleep_good',
         'bleep_standard',
