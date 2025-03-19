@@ -9,11 +9,17 @@ import Dashboard from './components/Dashboard.vue';
 import ThreeTNavigation from './components/ThreeTNavigation.vue';
 import ChartComponent from './components/ChartComponent.vue';
 import NotificationWidget from './components/NotificationWidget.vue';
+import KpiForm from "./components/KpiForm.vue";
+import KpiSummaryPage from './components/KpiSummaryPage.vue';
+import KpiSummaryTable from './components/KpiSummaryTable.vue';
 
+app.component('kpiform', KpiForm );
 app.component('example-component', ExampleComponent);
 app.component('dashboard', Dashboard);
 app.component('three-t-navigation', ThreeTNavigation);
 app.component('chart-component', ChartComponent);
 app.component('notification-widget', NotificationWidget);
+app.component('kpi-summary-page', KpiSummaryPage);
+app.component('kpi-summary-table', KpiSummaryTable);
 
 app.mount('#app');

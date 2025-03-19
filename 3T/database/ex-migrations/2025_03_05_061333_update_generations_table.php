@@ -11,13 +11,7 @@ class CreateGenerationsTable extends Migration
         Schema::create('generations', function (Blueprint $table) {
             $table->id();
             $table->string('gen'); // e.g., "Generation 2025"
-            $table->unsignedBigInteger('group_id'); // references the groups table
             $table->timestamps();
-
-            $table->foreign('group_id')
-                  ->references('id')
-                  ->on('groups')
-                  ->onDelete('cascade');
         });
     }
 

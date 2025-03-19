@@ -18,10 +18,17 @@
     <div class="table-responsive">
       <table class="table table-hover table-sm">
         <tbody>
+          <!-- If no form exists, show a message but allow clicking -->
           <tr v-if="currentForms.length === 0">
-            <td class="text-muted text-center">None</td>
+            <td class="text-muted text-center clickable-row" @click="navigateToForm(null)">
+              Tidak ada data, klik untuk menambahkan
+            </td>
           </tr>
-          <tr v-for="form in currentForms" :key="form.id" @click="navigateToForm(form.id)" class="clickable-row">
+          <tr 
+            v-for="form in currentForms" 
+            :key="form.id" 
+            @click="navigateToForm(form)" 
+            class="clickable-row">
             <td>{{ form.name }} ({{ form.period }})</td>
           </tr>
         </tbody>
@@ -34,7 +41,11 @@
     <h6 class="text-secondary">{{ finalCategoryTitle }}</h6>
     <ul class="list-group">
       <li v-if="filteredDocuments.length === 0" class="list-group-item text-muted text-center">None</li>
-      <li class="list-group-item" v-for="doc in filteredDocuments" :key="doc.id" @click="navigateToForm(doc.id)">
+      <li 
+        class="list-group-item clickable-row" 
+        v-for="doc in filteredDocuments" 
+        :key="doc.id" 
+        @click="navigateToForm(doc)">
         <a href="#" class="text-decoration-none">{{ doc.name }} ({{ doc.period }})</a>
       </li>
     </ul>
@@ -42,12 +53,12 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      activeCategory: 'FinalKPI',
+      activeCategory: "FinalKPI",
       finalDocuments: {
         FinalKPI: [],
         FinalBodyData: [],
@@ -61,26 +72,24 @@ export default {
       return this.finalDocuments[this.activeCategory] || [];
     },
     currentFormTitle() {
-      const titles = {
+      return {
         FinalKPI: "Dokumen KPI Saat Ini",
         FinalBodyData: "Dokumen Data BB-TB Saat Ini",
         FinalPhysical: "Dokumen Tes Fisik Saat Ini"
-      };
-      return titles[this.activeCategory];
+      }[this.activeCategory];
     },
     finalCategoryTitle() {
-      const titles = {
+      return {
         FinalKPI: "Riwayat KPI",
         FinalBodyData: "Riwayat BB-TB",
         FinalPhysical: "Riwayat Tes Fisik"
-      };
-      return titles[this.activeCategory];
+      }[this.activeCategory];
     }
   },
   methods: {
     async fetchDashboardData() {
       try {
-        const response = await axios.get('/dashboard-data');
+        const response = await axios.get("/dashboard-data");
         this.finalDocuments.FinalKPI = response.data.finalKpis;
         this.finalDocuments.FinalBodyData = response.data.finalBodyData;
         this.finalDocuments.FinalPhysical = response.data.finalPhysicals;
@@ -90,11 +99,15 @@ export default {
           response.data.currentBodyData
         ].filter(Boolean);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     },
-    navigateToForm(id) {
-      window.location.href = `/form/${id}`;
+    navigateToForm(form) {
+      if (this.activeCategory === "FinalKPI" || !form) {
+        window.location.href = "/form/kpi"; // Use Laravel route
+      } else {
+        window.location.href = `/form/${form.id}`; // Navigate to other forms
+      }
     }
   },
   mounted() {
@@ -102,6 +115,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .clickable-row {

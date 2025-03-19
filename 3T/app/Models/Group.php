@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Group extends Model
 {
     use HasFactory;
-    protected $fillable = ['id','name','prodi'];
+    protected $fillable = ['id','name','prodi','gen_id'];
 
     public function users()
     {
@@ -16,4 +16,9 @@ class Group extends Model
     }
     protected $table = 'groups';
     public $timestamps = false;
+
+    public function generations()
+    {
+        return $this->belongsTo(Generation::class);
+    }
 }

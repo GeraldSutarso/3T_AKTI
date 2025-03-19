@@ -12,7 +12,7 @@ class Kpi extends Model
     protected $table = 'kpi';
 
     protected $fillable = [
-        'user_id', 'period_id', 'no_room', 'kedisiplinan_point', 'kedisiplinan_nilai',
+        'user_id', 'no_room', 'kedisiplinan_point', 'kedisiplinan_nilai',
         'kesehatan_point', 'kesehatan_nilai', 'safety_point', 'safety_nilai',
         'r5_point', 'r5_nilai', 'vt7_point', 'vt7_nilai', 'keterangan'
     ];
@@ -20,10 +20,5 @@ class Kpi extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function period()
-    {
-        return $this->belongsTo(Period::class);
     }
 }

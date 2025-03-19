@@ -11,7 +11,7 @@ class Physical extends Model
 
     protected $table = 'physical';
 
-    protected $fillable = ['user_id', 'period_id', 'bleep', 'pull_up', 'push_up', 'sit_up', 'shuttle', 'avg'];
+    protected $fillable = ['user_id', 'bleep', 'pull_up', 'push_up', 'sit_up', 'shuttle', 'avg'];
 
     public function user()
     {

@@ -9,10 +9,15 @@ class Generation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['gen', 'group_id'];
+    protected $fillable = ['gen'];
 
     public function group()
     {
-        return $this->belongsTo(Group::class);
+        return $this->hasMany(Group::class);
+    }
+
+    public function periods()
+    {
+        return $this->hasMany(Period::class);
     }
 }

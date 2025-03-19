@@ -9,8 +9,12 @@ class Period extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['month', 'semester', 'is_current'];
+    protected $fillable = ['month', 'semester','gen_id', 'is_current'];
 
+    public function generations()
+    {
+        return $this->belongsTo(Generation::class);
+    }
     public function kpis()
     {
         return $this->hasMany(Kpi::class);

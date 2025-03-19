@@ -11,7 +11,7 @@ class BodyData extends Model
 
     protected $table = 'body_data';
 
-    protected $fillable = ['user_id', 'period_id', 'height', 'ideal_weight', 'actual_weight', 'conclusion'];
+    protected $fillable = ['user_id', 'height', 'ideal_weight', 'actual_weight', 'conclusion'];
 
     public function user()
     {
