@@ -11,10 +11,6 @@ class DocumentSignature extends Model
 
     protected $table = 'document_signatures';
 
-    protected $fillable = ['document_type', 'document_id', 'role', 'signer_user_id', 'signed_at'];
+    protected $fillable = ['document_type', 'document_id', 'role', 'signer'];
 
-    public function signer()
-    {
-        return $this->belongsTo(User::class, 'signer_user_id');
-    }
 }

@@ -34,15 +34,21 @@ Route::get('/form/kpi', function () {
     return view('forms.kpi'); // Make sure this view exists
 });
 
-// API to get users for the current period
-Route::get('/api/current-period-users', [PeriodController::class, 'getCurrentPeriodUsers']);
+// // API to get users for the current period
+// Route::get('/api/current-period-users', [PeriodController::class, 'getCurrentPeriodUsers']);
 
-// API to save KPI data
-Route::post('/api/kpis', [KpiController::class, 'store']);
+// // API to save KPI data
+// Route::post('/api/kpis', [KpiController::class, 'store']);
 
-Route::middleware('auth')->group(function () {
-    Route::get('/periods/current', [KpiController::class, 'getCurrentPeriod']);
-    Route::get('/users/kpi-data', [KpiController::class, 'getKpiData']);
-    Route::post('/kpi/update-field', [KpiController::class, 'updateKpiField']);
-});
-Route::get('/periods/thresholds', [KpiController::class, 'getPeriodThresholds']);
+// Route::middleware('auth')->group(function () {
+//     Route::get('/periods/current', [KpiController::class, 'getCurrentPeriod']);
+//     Route::get('/users/kpi-data', [KpiController::class, 'getKpiData']);
+//     Route::post('/kpi/update-field', [KpiController::class, 'updateKpiField']);
+// });
+// Route::get('/periods/thresholds', [KpiController::class, 'getPeriodThresholds']);
+
+Route::get('/kpi/users', [KpiController::class, 'getCurrentGenUsers']);
+Route::get('/kpi/period', [KpiController::class, 'getCurrentPeriod']);
+Route::get('/kpi/minimum-values', [KpiController::class, 'getMinimumValues']);
+Route::post('/kpi/store', [KpiController::class, 'store']);
+Route::get('/kpi/generation/{gen_id}', [KpiController::class, 'getGeneration']);

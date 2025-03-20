@@ -2,6 +2,6 @@
 
 @section('content')
     <div id="app">
-        <kpi-summary-page></kpi-summary-page> <!-- Vue Component -->
+        <kpiform></kpiform> <!-- Vue Component -->
     </div>
 @endsection
